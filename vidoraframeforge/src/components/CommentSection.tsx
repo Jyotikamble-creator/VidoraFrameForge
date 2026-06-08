@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { MessageCircle, Send, Loader2, Edit2, Trash2, Reply } from "lucide-react"
+import { ContentType } from "@prisma/client"
 
 // Simple date formatter to show relative time
 const formatDistanceToNow = (date: Date | string): string => {
@@ -41,7 +42,7 @@ interface Comment {
 }
 
 interface CommentSectionProps {
-  contentType: "video" | "photo" | "journal"
+  contentType: ContentType
   contentId: string
   initialCommentCount?: number
 }

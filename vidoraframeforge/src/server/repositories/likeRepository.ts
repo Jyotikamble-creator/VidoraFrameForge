@@ -1,10 +1,10 @@
 import { prisma } from "@/server/db"
-import { Like, Prisma } from "@prisma/client"
+import { Like, Prisma, ContentType } from "@prisma/client"
 import { Logger, LogTags } from "@/lib/logger"
 
 export interface LikeFilters {
   userId?: string
-  contentType?: "video" | "photo" | "journal"
+  contentType?: ContentType
   contentId?: string
 }
 
@@ -26,7 +26,7 @@ export class LikeRepository {
   /**
    * Find like by user and content
    */
-  async findOne(userId: string, contentType: "video" | "photo" | "journal", contentId: string) {
+  async findOne(userId: string, contentType: ContentType, contentId: string) {
     try {
       return await prisma.like.findUnique({
         where: {
@@ -46,7 +46,7 @@ export class LikeRepository {
   /**
    * Check if user has liked content
    */
-  async hasLiked(userId: string, contentType: "video" | "photo" | "journal", contentId: string): Promise<boolean> {
+  async hasLiked(userId: string, contentType: ContentType, contentId: string): Promise<boolean> {
     try {
       const like = await this.findOne(userId, contentType, contentId)
       return !!like
@@ -59,7 +59,7 @@ export class LikeRepository {
   /**
    * Find all likes for content
    */
-  async findByContent(contentType: "video" | "photo" | "journal", contentId: string, limit = 100) {
+  async findByContent(contentType: ContentType, contentId: string, limit = 100) {
     try {
       return await prisma.like.findMany({
         where: { contentType, contentId },
@@ -114,7 +114,7 @@ export class LikeRepository {
    */
   async create(likeData: {
     userId: string
-    contentType: "video" | "photo" | "journal"
+    contentType: ContentType
     contentId: string
   }) {
     try {
@@ -143,7 +143,7 @@ export class LikeRepository {
   /**
    * Delete a like
    */
-  async delete(userId: string, contentType: "video" | "photo" | "journal", contentId: string) {
+  async delete(userId: string, contentType: ContentType, contentId: string) {
     try {
       const result = await prisma.like.delete({
         where: {
@@ -185,7 +185,7 @@ export class LikeRepository {
   /**
    * Count likes for content
    */
-  async countByContent(contentType: "video" | "photo" | "journal", contentId: string): Promise<number> {
+  async countByContent(contentType: ContentType, contentId: string): Promise<number> {
     try {
       return await prisma.like.count({ where: { contentType, contentId } })
     } catch (error) {
@@ -273,7 +273,7 @@ export class LikeRepository {
   /**
    * Delete all likes for content (when content is deleted)
    */
-  async deleteByContent(contentType: "video" | "photo" | "journal", contentId: string) {
+  async deleteByContent(contentType: ContentType, contentId: string) {
     try {
       const result = await prisma.like.deleteMany({ where: { contentType, contentId } })
       Logger.i(LogTags.AUTH, `${result.count} likes deleted for ${contentType} ${contentId}`)
@@ -301,7 +301,7 @@ export class LikeRepository {
   /**
    * Get users who liked content
    */
-  async getUsersWhoLiked(contentType: "video" | "photo" | "journal", contentId: string, limit = 50) {
+  async getUsersWhoLiked(contentType: ContentType, contentId: string, limit = 50) {
     try {
       const likes = await prisma.like.findMany({
         where: { contentType, contentId },
@@ -333,7 +333,7 @@ export class LikeRepository {
    */
   async hasLikedMultiple(
     userId: string,
-    contentType: "video" | "photo" | "journal",
+    contentType: ContentType,
     contentIds: string[]
   ): Promise<{ [contentId: string]: boolean }> {
     try {

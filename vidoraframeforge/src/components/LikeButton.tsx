@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Heart, Loader2 } from "lucide-react"
+import { ContentType } from "@prisma/client"
 
 interface LikeButtonProps {
-  contentType: "video" | "photo" | "journal"
+  contentType: ContentType
   contentId: string
   initialLikeCount?: number
   initialIsLiked?: boolean

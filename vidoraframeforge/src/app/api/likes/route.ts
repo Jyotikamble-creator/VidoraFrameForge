@@ -7,8 +7,10 @@ import { videoRepository } from "@/server/repositories/videoRepository"
 import { photoRepository } from "@/server/repositories/photoRepository"
 import { journalRepository } from "@/server/repositories/journalRepository"
 import { prisma } from "@/server/db"
+import { ContentType } from "@prisma/client"
 
-type ContentType = "video" | "photo" | "journal"
+// Validation helper for ContentType
+const VALID_CONTENT_TYPES = Object.values(ContentType)
 
 // GET /api/likes?contentType=video&contentId=xxx - Check if user liked and get like count
 export async function GET(request: NextRequest) {
@@ -25,19 +27,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Content type and ID are required" }, { status: 400 })
     }
 
-    if (!["video", "photo", "journal"].includes(contentType)) {
+    if (!VALID_CONTENT_TYPES.includes(contentType as ContentType)) {
       return NextResponse.json({ error: "Invalid content type" }, { status: 400 })
     }
 
     // Get total like count using Prisma
     const likeCount = await prisma.like.count({
-      where: { contentType: contentType as any, contentId }
+      where: { contentType: contentType as ContentType, contentId }
     })
 
     // Check if current user liked (if authenticated)
     let isLiked = false
     if (session?.user) {
-      isLiked = await likeRepository.hasLiked(session.user.id, contentType as any, contentId)
+      isLiked = await likeRepository.hasLiked(session.user.id, contentType as ContentType, contentId)
     }
 
     return NextResponse.json({ likeCount, isLiked })
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Content type and ID are required" }, { status: 400 })
     }
 
-    if (!["video", "photo", "journal"].includes(contentType)) {
+    if (!VALID_CONTENT_TYPES.includes(contentType as ContentType)) {
       return NextResponse.json({ error: "Invalid content type" }, { status: 400 })
     }
 

@@ -1,10 +1,10 @@
 import { prisma } from "@/server/db"
-import { Comment, Prisma } from "@prisma/client"
+import { Comment, Prisma, ContentType } from "@prisma/client"
 import { Logger, LogTags } from "@/lib/logger"
 
 export interface CommentFilters {
   userId?: string
-  contentType?: "video" | "photo" | "journal"
+  contentType?: ContentType
   contentId?: string
   parentCommentId?: string | null
 }
@@ -39,7 +39,7 @@ export class CommentRepository {
    * Find root comments for content (no parent)
    */
   async findByContent(
-    contentType: "video" | "photo" | "journal",
+    contentType: ContentType,
     contentId: string,
     limit = 50,
     skip = 0
@@ -138,7 +138,7 @@ export class CommentRepository {
    */
   async create(commentData: {
     userId: string
-    contentType: "video" | "photo" | "journal"
+    contentType: ContentType
     contentId: string
     content: string
     parentCommentId?: string
@@ -228,7 +228,7 @@ export class CommentRepository {
    * Count comments for content
    */
   async countByContent(
-    contentType: "video" | "photo" | "journal",
+    contentType: ContentType,
     contentId: string,
     includeReplies = true
   ): Promise<number> {
@@ -341,7 +341,7 @@ export class CommentRepository {
   /**
    * Delete all comments for content (when content is deleted)
    */
-  async deleteByContent(contentType: "video" | "photo" | "journal", contentId: string) {
+  async deleteByContent(contentType: ContentType, contentId: string) {
     try {
       const result = await prisma.comment.deleteMany({
         where: { contentType, contentId }
@@ -375,7 +375,7 @@ export class CommentRepository {
    * Find comments with replies populated
    */
   async findWithReplies(
-    contentType: "video" | "photo" | "journal",
+    contentType: ContentType,
     contentId: string,
     limit = 50
   ) {
