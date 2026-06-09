@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/server/db"
 import { Logger, LogTags, categorizeError, DatabaseError } from "@/lib/logger"
