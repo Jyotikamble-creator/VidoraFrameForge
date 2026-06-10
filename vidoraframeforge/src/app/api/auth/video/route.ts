@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
+
+export const dynamic = "force-dynamic"
 import { VideoController } from "@/server/controllers/video.controller"
 
 /**

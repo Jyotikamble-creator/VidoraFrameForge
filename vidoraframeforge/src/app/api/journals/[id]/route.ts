@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
+
+export const dynamic = "force-dynamic"
 import { prisma } from "@/server/db"
 import { Logger, LogTags, categorizeError, DatabaseError } from "@/lib/logger"
 
@@ -16,7 +18,7 @@ export async function GET(
         author: {
           select: {
             id: true,
-            name: true,
+            username: true,
             avatar: true,
             email: true
           }
