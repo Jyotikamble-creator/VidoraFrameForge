@@ -1,4 +1,4 @@
-import ImageKit from "imagekit";
+import ImageKit from "@imagekit/nodejs";
 
 // Validate environment variables
 if (!process.env.IMAGEKIT_PUBLIC_KEY) {

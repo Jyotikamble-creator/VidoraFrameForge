@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic"
-import ImageKit from "imagekit";
+import ImageKit from "@imagekit/nodejs";
 import { Logger, LogTags, categorizeError } from "@/lib/logger";
 
 export async function GET() {
