@@ -19,13 +19,13 @@ let prisma: PrismaClient
 const prismaClientOptions = {
   // Use unpooled connection for migrations, regular connection for queries
   // This approach is compatible with Prisma 5.22+
-  ...(process.env.NODE_ENV === "production" && {
+  ...(process.env.NODE_ENV === "production" && DATABASE_URL ? {
     datasources: {
       db: {
         url: DATABASE_URL,
       },
     },
-  }),
+  } : {}),
 }
 
 if (process.env.NODE_ENV === "production") {
