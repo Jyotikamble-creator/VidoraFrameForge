@@ -1,20 +1,9 @@
 import ImageKit from "@imagekit/nodejs";
 
-// Validate environment variables
-if (!process.env.IMAGEKIT_PUBLIC_KEY) {
-  throw new Error("IMAGEKIT_PUBLIC_KEY is not defined in environment variables");
-}
-if (!process.env.IMAGEKIT_PRIVATE_KEY) {
-  throw new Error("IMAGEKIT_PRIVATE_KEY is not defined in environment variables");
-}
-if (!process.env.IMAGEKIT_URL_ENDPOINT) {
-  throw new Error("IMAGEKIT_URL_ENDPOINT is not defined in environment variables");
-}
-
 const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "fallback_public_key",
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "fallback_private_key",
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "https://ik.imagekit.io/fallback",
 });
 
 // ImageKit service functions
