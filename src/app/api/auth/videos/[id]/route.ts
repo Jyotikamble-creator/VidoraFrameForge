@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server"
 import { VideoController } from "@/server/controllers/video.controller"
 

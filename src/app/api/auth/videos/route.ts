@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { type NextRequest, NextResponse } from "next/server"
 import { VideoController } from "@/server/controllers/video.controller"
 
@@ -17,3 +18,4 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   return videoController.createVideo(request)
 }
+

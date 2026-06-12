@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { type NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { Logger, LogTags, categorizeError, ValidationError, DatabaseError, ConnectionError } from "@/lib/logger"
@@ -140,3 +141,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Registration failed" }, { status: 500 });
   }
 }
+
