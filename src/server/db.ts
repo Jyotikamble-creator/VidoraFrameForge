@@ -14,11 +14,7 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
-let prisma: PrismaClient
-
 const prismaClientOptions = {
-  // Use unpooled connection for migrations, regular connection for queries
-  // This approach is compatible with Prisma 5.22+
   ...(process.env.NODE_ENV === "production" && DATABASE_URL ? {
     datasources: {
       db: {
@@ -28,16 +24,37 @@ const prismaClientOptions = {
   } : {}),
 }
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient(prismaClientOptions)
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient(prismaClientOptions)
+// Lazy initialization to prevent Prisma from connecting or throwing errors during Next.js build
+class PrismaSingleton {
+  private static instance: PrismaClient | undefined;
+
+  public static getInstance(): PrismaClient {
+    if (process.env.NODE_ENV === "production") {
+      if (!this.instance) {
+        this.instance = new PrismaClient(prismaClientOptions)
+      }
+      return this.instance
+    } else {
+      if (!global.prisma) {
+        global.prisma = new PrismaClient(prismaClientOptions)
+      }
+      return global.prisma
+    }
   }
-  prisma = global.prisma
 }
 
-export { prisma }
+export const prisma = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    const client = PrismaSingleton.getInstance()
+    // Bind methods to the client instance so 'this' works correctly
+    const value = (client as any)[prop]
+    if (typeof value === 'function') {
+      return value.bind(client)
+    }
+    return value
+  }
+})
+
 
 export async function connectToDatabase() {
   if (DB_DISABLED) {
