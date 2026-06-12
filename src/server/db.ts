@@ -45,8 +45,18 @@ class PrismaSingleton {
 
 export const prisma = new Proxy({} as PrismaClient, {
   get(target, prop) {
+    // Ignore internal properties checked by Webpack/Node/Promises
+    if (
+      prop === '__esModule' || 
+      prop === 'then' || 
+      prop === 'constructor' || 
+      typeof prop === 'symbol' ||
+      prop === 'toJSON'
+    ) {
+      return Reflect.get(target, prop)
+    }
+    
     const client = PrismaSingleton.getInstance()
-    // Bind methods to the client instance so 'this' works correctly
     const value = (client as any)[prop]
     if (typeof value === 'function') {
       return value.bind(client)
